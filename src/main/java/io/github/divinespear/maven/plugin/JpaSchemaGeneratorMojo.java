@@ -68,7 +68,7 @@ import org.springframework.orm.jpa.persistenceunit.SmartPersistenceUnitInfo;
 
 /**
  * Generate database schema or DDL scripts.
- * 
+ *
  * @author divinespear
  */
 @Mojo(name = "generate", defaultPhase = LifecyclePhase.PROCESS_CLASSES)
@@ -458,6 +458,26 @@ public class JpaSchemaGeneratorMojo
     public List<String> getPackageToScan() {
         return packageToScan;
     }
+
+
+    public enum ValidationMode {
+        AUTO,
+        CALLBACK,
+        NONE
+    }
+
+    /**
+     * validation mode value.
+     *
+     * {@code AUTO}. If Validation provider is in a scope, validation constraints are also used in schema generation.
+     */
+    @Parameter
+    private ValidationMode validationMode;
+
+    public ValidationMode getValidationMode() {
+        return validationMode;
+    }
+
 
     private static final URL[] EMPTY_URLS = new URL[0];
 

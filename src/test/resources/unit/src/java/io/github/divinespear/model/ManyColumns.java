@@ -19,6 +19,8 @@ package io.github.divinespear.model;
  * under the License.
  */
 
+import org.hibernate.validator.constraints.Length;
+
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
@@ -26,6 +28,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * Test JPA Model
@@ -41,8 +46,12 @@ public class ManyColumns {
     @GeneratedValue
     private Long id;
 
+    @NotNull
     private String column00;
+    @Size(max = 10)
     private String column01;
+    @NotNull
+    @Length(max = 20)
     private String column02;
     private String column03;
     private String column04;

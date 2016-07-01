@@ -28,12 +28,18 @@
 		<maven.compiler.source>1.7</maven.compiler.source>
 		<maven.compiler.target>1.7</maven.compiler.target>
 		<eclipselink.version>2.6.1</eclipselink.version>
+		<hibernate-validator.version>5.2.4.Final</hibernate-validator.version>
 	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.eclipse.persistence</groupId>
 			<artifactId>org.eclipse.persistence.jpa</artifactId>
 			<version>${eclipselink.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>${hibernate-validator.version}</version>
 		</dependency>
 	</dependencies>
 	<build>
@@ -56,6 +62,7 @@
 					<databaseMajorVersion>1</databaseMajorVersion>
 					<databaseMinorVersion>3</databaseMinorVersion>
 					<lineSeparator>crlf</lineSeparator>
+					<validationMode>NONE</validationMode>
 				</configuration>
 			</plugin>
 		</plugins>

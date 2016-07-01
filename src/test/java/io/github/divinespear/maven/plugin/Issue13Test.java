@@ -75,13 +75,13 @@ public class Issue13Test
         File createScriptFile = mojo.getCreateOutputFile();
         assertThat("create script should be generated.", createScriptFile.exists(), is(true));
 
-        final String expectCreate = readResourceAsString("/unit/eclipselink-simple-script-test/expected-create.txt").replaceAll("\n", "\r\n");
+        final String expectCreate = readResourceAsString("/unit/eclipselink-simple-script-test/expected-create.txt");
         assertThat(this.readFileAsString(createScriptFile), is(expectCreate));
 
         File dropScriptFile = mojo.getDropOutputFile();
         assertThat("drop script should be generated.", dropScriptFile.exists(), is(true));
 
-        final String expectDrop = readResourceAsString("/unit/eclipselink-simple-script-test/expected-drop.txt").replaceAll("\n", "\r\n");
+        final String expectDrop = readResourceAsString("/unit/eclipselink-simple-script-test/expected-drop.txt");
         assertThat(this.readFileAsString(dropScriptFile), is(expectDrop));
     }
 }

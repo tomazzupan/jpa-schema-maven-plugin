@@ -14,6 +14,11 @@ READ MY LIP; **JPA DDL GENERATOR IS NOT SILVER BULLET**
 Sometimes (*most times* exactly :P) JPA will generate weird scripts so you **SHOULD** modify them properly.
 
 
+## Announce 0.3
+
+* Support for Hibernate Validator is added. 
+
+
 ## Announce 0.2
 
 Finally, I got some times, and 0.2 is here.

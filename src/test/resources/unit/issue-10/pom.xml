@@ -28,6 +28,7 @@
 		<maven.compiler.source>1.7</maven.compiler.source>
 		<maven.compiler.target>1.7</maven.compiler.target>
 		<hibernate.version>5.0.7.Final</hibernate.version>
+		<hibernate-validator.version>5.2.4.Final</hibernate-validator.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -36,15 +37,9 @@
 			<version>${hibernate.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>javax.validation</groupId>
-			<artifactId>validation-api</artifactId>
-			<version>1.1.0.Final</version>
-		</dependency>
-		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>
-			<version>5.1.0.Final</version>
-			<scope>runtime</scope>
+			<version>${hibernate-validator.version}</version>
 		</dependency>
 	</dependencies>
 	<build>
@@ -66,6 +61,7 @@
 					<databaseProductName>H2</databaseProductName>
 					<databaseMajorVersion>1</databaseMajorVersion>
 					<databaseMinorVersion>3</databaseMinorVersion>
+					<validationMode>NONE</validationMode>
 				</configuration>
 			</plugin>
 		</plugins>

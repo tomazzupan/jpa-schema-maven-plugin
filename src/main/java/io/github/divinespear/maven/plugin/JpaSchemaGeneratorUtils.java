@@ -67,6 +67,9 @@ final class JpaSchemaGeneratorUtils {
                     mojo.getDropOutputFile().toURI().toString());
 
         }
+        // validation mode
+        map.put(PersistenceUnitProperties.VALIDATION_MODE,
+                mojo.getValidationMode() == null ? null : mojo.getValidationMode().toString());
         // database emulation options
         map.put(PersistenceUnitProperties.SCHEMA_DATABASE_PRODUCT_NAME, mojo.getDatabaseProductName());
         map.put(PersistenceUnitProperties.SCHEMA_DATABASE_MAJOR_VERSION,
@@ -170,7 +173,6 @@ final class JpaSchemaGeneratorUtils {
         map.put(PersistenceUnitProperties.TRANSACTION_TYPE, "RESOURCE_LOCAL");
         map.put(PersistenceUnitProperties.JTA_DATASOURCE, null);
         map.put(PersistenceUnitProperties.NON_JTA_DATASOURCE, null);
-        map.put(PersistenceUnitProperties.VALIDATION_MODE, "NONE");
 
         // normalize - remove null
         List<String> keys = new ArrayList<>(map.keySet());

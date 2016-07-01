@@ -82,7 +82,7 @@ abstract class AbstractSchemaGeneratorMojoTest
                 int len = reader.read(buf);
                 builder.append(buf, 0, len);
             }
-            return builder.toString();
+            return builder.toString().replaceAll("\n", LINE_SEPARATOR);
         }
     }
 

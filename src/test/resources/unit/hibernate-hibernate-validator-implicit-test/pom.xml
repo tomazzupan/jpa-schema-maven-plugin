@@ -21,26 +21,26 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.github.divinespear</groupId>
-	<artifactId>eclipselink-simple-script-test</artifactId>
+	<artifactId>hibernate-hibernate-validator-test</artifactId>
 	<version>0.0.0-TEST</version>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.7</maven.compiler.source>
 		<maven.compiler.target>1.7</maven.compiler.target>
-		<eclipselink.version>2.6.1</eclipselink.version>
+		<hibernate.version>5.0.9.Final</hibernate.version>
         <hibernate-validator.version>5.2.4.Final</hibernate-validator.version>
-	</properties>
+    </properties>
 	<dependencies>
 		<dependency>
-			<groupId>org.eclipse.persistence</groupId>
-			<artifactId>org.eclipse.persistence.jpa</artifactId>
-			<version>${eclipselink.version}</version>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager</artifactId>
+			<version>${hibernate.version}</version>
 		</dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-validator</artifactId>
-            <version>${hibernate-validator.version}</version>
-        </dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>${hibernate-validator.version}</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<outputDirectory>${basedir}/target/classes</outputDirectory>
@@ -56,13 +56,12 @@
 				<artifactId>jpa-schema-maven-plugin</artifactId>
 				<version>${plugin.version}</version>
 				<configuration>
-					<outputDirectory>${basedir}/target/test-classes/unit/eclipselink-formatted-script-test/target/generated-schema</outputDirectory>
-					<format>true</format>
+					<outputDirectory>${basedir}/target/test-classes/unit/hibernate-hibernate-validator-explicit-test/target/generated-schema</outputDirectory>
 					<scriptAction>drop-and-create</scriptAction>
 					<databaseProductName>H2</databaseProductName>
 					<databaseMajorVersion>1</databaseMajorVersion>
 					<databaseMinorVersion>3</databaseMinorVersion>
-					<validationMode>NONE</validationMode>
+                    <validationMode>AUTO</validationMode>
 				</configuration>
 			</plugin>
 		</plugins>
