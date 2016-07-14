@@ -43,16 +43,16 @@
 		</dependency>
 	</dependencies>
 	<build>
-		<outputDirectory>${basedir}/target/classes</outputDirectory>
-		<sourceDirectory>${basedir}/../src/java</sourceDirectory>
+		<outputDirectory>target/classes</outputDirectory>
+		<sourceDirectory>../src/java</sourceDirectory>
 		<resources>
 			<resource>
-				<directory>${basedir}/resources</directory>
+				<directory>resources</directory>
 			</resource>
 		</resources>
 		<plugins>
 			<plugin>
-				<groupId>io.github.divinespear</groupId>
+				<groupId>si.simobil.maven</groupId>
 				<artifactId>jpa-schema-maven-plugin</artifactId>
 				<version>${plugin.version}</version>
 				<configuration>
@@ -62,6 +62,7 @@
 					<databaseMajorVersion>1</databaseMajorVersion>
 					<databaseMinorVersion>3</databaseMinorVersion>
 					<validationMode>NONE</validationMode>
+					<project implementation="io.github.divinespear.maven.plugin.stub.Issue17ProjectStub"/>
 				</configuration>
 			</plugin>
 		</plugins>

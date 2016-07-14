@@ -29,7 +29,8 @@
 		<maven.compiler.target>1.7</maven.compiler.target>
 		<hibernate.version>5.0.9.Final</hibernate.version>
         <hibernate-validator.version>5.2.4.Final</hibernate-validator.version>
-    </properties>
+		<javax.el-glassfish.version>2.2.6</javax.el-glassfish.version>
+	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.hibernate</groupId>
@@ -41,18 +42,23 @@
 			<artifactId>hibernate-validator</artifactId>
 			<version>${hibernate-validator.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.glassfish.web</groupId>
+			<artifactId>javax.el</artifactId>
+			<version>${javax.el-glassfish.version}</version>
+		</dependency>
 	</dependencies>
 	<build>
-		<outputDirectory>${basedir}/target/classes</outputDirectory>
-		<sourceDirectory>${basedir}/../src/java</sourceDirectory>
+		<outputDirectory>target/classes</outputDirectory>
+		<sourceDirectory>../src/java</sourceDirectory>
 		<resources>
 			<resource>
-				<directory>${basedir}/resources</directory>
+				<directory>resources</directory>
 			</resource>
 		</resources>
 		<plugins>
 			<plugin>
-				<groupId>io.github.divinespear</groupId>
+				<groupId>si.simobil.maven</groupId>
 				<artifactId>jpa-schema-maven-plugin</artifactId>
 				<version>${plugin.version}</version>
 				<configuration>
@@ -61,6 +67,7 @@
 					<databaseProductName>H2</databaseProductName>
 					<databaseMajorVersion>1</databaseMajorVersion>
 					<databaseMinorVersion>3</databaseMinorVersion>
+					<project implementation="io.github.divinespear.maven.plugin.stub.HibernateHibernateValidatorExplicitProjectStub"/>
 				</configuration>
 			</plugin>
 		</plugins>

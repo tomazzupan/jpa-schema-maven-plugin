@@ -28,6 +28,7 @@
 		<maven.compiler.source>1.7</maven.compiler.source>
 		<maven.compiler.target>1.7</maven.compiler.target>
 		<eclipselink.version>2.6.1</eclipselink.version>
+		<h2.version>[1.4, 1.9)</h2.version>
 		<hibernate-validator.version>5.2.4.Final</hibernate-validator.version>
 	</properties>
 	<dependencies>
@@ -43,16 +44,16 @@
 		</dependency>
 	</dependencies>
 	<build>
-		<outputDirectory>${basedir}/target/classes</outputDirectory>
-		<sourceDirectory>${basedir}/../src/java</sourceDirectory>
+		<outputDirectory>target/classes</outputDirectory>
+		<sourceDirectory>../src/java</sourceDirectory>
 		<resources>
 			<resource>
-				<directory>${basedir}/resources</directory>
+				<directory>resources</directory>
 			</resource>
 		</resources>
 		<plugins>
 			<plugin>
-				<groupId>io.github.divinespear</groupId>
+				<groupId>si.simobil.maven</groupId>
 				<artifactId>jpa-schema-maven-plugin</artifactId>
 				<version>${plugin.version}</version>
 				<configuration>
@@ -60,7 +61,15 @@
 					<jdbcDriver>org.h2.Driver</jdbcDriver>
 					<jdbcUrl>jdbc:h2:nio:${basedir}/target/test-classes/unit/eclipselink-simple-database-test/target/test</jdbcUrl>
 					<jdbcUser>sa</jdbcUser>
+					<project implementation="io.github.divinespear.maven.plugin.stub.EclipseSimpleDatabaseProjectStub"/>
 				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>com.h2database</groupId>
+						<artifactId>h2</artifactId>
+						<version>${h2.version}</version>
+					</dependency>
+				</dependencies>
 			</plugin>
 		</plugins>
 	</build>

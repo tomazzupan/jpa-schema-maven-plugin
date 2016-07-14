@@ -1,26 +1,46 @@
 package io.github.divinespear.maven.plugin;
 
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
+import org.apache.maven.RepositoryUtils;
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.ArtifactScopeEnum;
+import org.apache.maven.artifact.DependencyResolutionRequiredException;
+import org.apache.maven.execution.MavenSession;
+import org.apache.maven.model.Dependency;
+import org.apache.maven.plugin.MojoExecution;
+import org.apache.maven.plugin.descriptor.PluginDescriptor;
+import org.apache.maven.plugin.testing.AbstractMojoTestCase;
+import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.apache.maven.project.DefaultDependencyResolutionRequest;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
+import org.apache.maven.shared.invoker.*;
+import org.eclipse.aether.DefaultRepositorySystemSession;
+import org.eclipse.aether.RepositorySystem;
+import org.eclipse.aether.RepositorySystemSession;
+import org.eclipse.aether.artifact.ArtifactTypeRegistry;
+import org.eclipse.aether.collection.CollectRequest;
+import org.eclipse.aether.connector.basic.BasicRepositoryConnectorFactory;
+import org.eclipse.aether.graph.DependencyFilter;
+import org.eclipse.aether.impl.DefaultServiceLocator;
+import org.eclipse.aether.repository.LocalRepository;
+import org.eclipse.aether.resolution.ArtifactResult;
+import org.eclipse.aether.resolution.DependencyRequest;
+import org.eclipse.aether.resolution.DependencyResolutionException;
+import org.eclipse.aether.resolution.DependencyResult;
+import org.eclipse.aether.spi.connector.RepositoryConnectorFactory;
+import org.eclipse.aether.spi.connector.transport.TransporterFactory;
+import org.eclipse.aether.transport.file.FileTransporterFactory;
+import org.eclipse.aether.transport.http.HttpTransporterFactory;
+import org.eclipse.aether.util.filter.ScopeDependencyFilter;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Arrays;
+import java.io.*;
+import java.net.MalformedURLException;
 import java.util.Collections;
+import java.util.List;
 import java.util.Properties;
 
-import org.apache.maven.plugin.testing.AbstractMojoTestCase;
-import org.apache.maven.project.MavenProject;
-import org.apache.maven.shared.invoker.DefaultInvocationRequest;
-import org.apache.maven.shared.invoker.DefaultInvoker;
-import org.apache.maven.shared.invoker.InvocationRequest;
-import org.apache.maven.shared.invoker.Invoker;
-import org.apache.maven.shared.invoker.MavenInvocationException;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
 
 abstract class AbstractSchemaGeneratorMojoTest
         extends AbstractMojoTestCase {
@@ -56,21 +76,63 @@ abstract class AbstractSchemaGeneratorMojoTest
     }
 
     protected JpaSchemaGeneratorMojo executeSchemaGeneration(File pomfile) throws Exception {
-        String parent = pomfile.getParent().toString();
+        String parent = pomfile.getParent();
         // create mojo
         JpaSchemaGeneratorMojo mojo = getGenerateMojo(pomfile);
         assertThat(mojo, notNullValue(JpaSchemaGeneratorMojo.class));
-        // configure project mock
-        MavenProject projectMock = mock(MavenProject.class);
-        doReturn(Arrays.asList(parent + "/target/classes")).when(projectMock)
-                                                           .getCompileClasspathElements();
-        setVariableValueToObject(mojo, "project", projectMock);
-        // configure project session
-        setVariableValueToObject(mojo, "session", newMavenSession(projectMock));
+
+        // setSession
+        MavenProject project = (MavenProject) getVariableValueFromObject(mojo, "project");
+        MavenSession session = newMavenSession(project);
+        setVariableValueToObject(mojo, "session", session);
+
+        // setup pluginDescriptor
+        MojoExecution mojoExecution = newMojoExecution("generate");
+        PluginDescriptor pluginDescriptor = mojoExecution.getMojoDescriptor().getPluginDescriptor();
+        pluginDescriptor.setPlugin(project.getPlugin(pluginDescriptor.getGroupId() + ":" + pluginDescriptor.getArtifactId()));
+        setVariableValueToObject(mojo, "pluginDescriptor", pluginDescriptor);
+
+        // setup Repository System Session
+        RepositorySystem repositorySystem = (RepositorySystem) getVariableValueFromObject(mojo, "repoSystem");
+        setupRepositorySession(session, repositorySystem);
+
+        // resolve project dependencies
+        resolveProjectDependencies(session, repositorySystem);
+
         // execute
         mojo.execute();
 
+
         return mojo;
+    }
+
+    private void setupRepositorySession(MavenSession session, RepositorySystem repositorySystem) {
+        LocalRepository localRepo = new LocalRepository("target/test-classes/unit/local-repo");
+
+        DefaultRepositorySystemSession repositorySession = (DefaultRepositorySystemSession) session.getRepositorySession();
+        repositorySession.setLocalRepositoryManager(repositorySystem.newLocalRepositoryManager(repositorySession, localRepo));
+    }
+
+    private void resolveProjectDependencies(MavenSession session, RepositorySystem repositorySystem) throws DependencyResolutionException, DependencyResolutionRequiredException, MalformedURLException {
+        MavenProject project = session.getCurrentProject();
+        RepositorySystemSession repositorySession = session.getRepositorySession();
+        ArtifactTypeRegistry stereotypes = repositorySession.getArtifactTypeRegistry();
+
+        CollectRequest collectRequest = new CollectRequest();
+        collectRequest.setRootArtifact(RepositoryUtils.toArtifact(project.getArtifact()));
+        collectRequest.setRequestContext("project");
+        collectRequest.setRepositories(project.getRemoteProjectRepositories());
+        for (Dependency dependency : project.getDependencies())
+            collectRequest.addDependency(RepositoryUtils.toDependency(dependency, stereotypes));
+
+
+        DependencyFilter dependencyFilter = new ScopeDependencyFilter(Artifact.SCOPE_TEST);
+        DependencyRequest request = new DependencyRequest(collectRequest, dependencyFilter);
+        List<String> compileClasspathElements = project.getCompileClasspathElements();
+        DependencyResult dependencyResult = repositorySystem.resolveDependencies(repositorySession, request);
+        for (ArtifactResult artifactResult : dependencyResult.getArtifactResults())
+            compileClasspathElements.add(artifactResult.getArtifact().getFile().toString());
+
     }
 
     protected String readResourceAsString(String name) throws IOException {

@@ -21,12 +21,13 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.github.divinespear</groupId>
-	<artifactId>hibernate-simple-database-test</artifactId>
+	<artifactId>hibernate-noxml-database-test</artifactId>
 	<version>0.0.0-TEST</version>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.7</maven.compiler.source>
 		<maven.compiler.target>1.7</maven.compiler.target>
+		<h2.version>[1.4, 1.9)</h2.version>
 		<hibernate.version>5.0.9.Final</hibernate.version>
 		<hibernate-validator.version>5.2.4.Final</hibernate-validator.version>
 	</properties>
@@ -43,16 +44,16 @@
 		</dependency>
 	</dependencies>
 	<build>
-		<outputDirectory>${basedir}/target/classes</outputDirectory>
-		<sourceDirectory>${basedir}/../src/java</sourceDirectory>
+		<outputDirectory>target/classes</outputDirectory>
+		<sourceDirectory>../src/java</sourceDirectory>
 		<resources>
 			<resource>
-				<directory>${basedir}/resources</directory>
+				<directory>resources</directory>
 			</resource>
 		</resources>
 		<plugins>
 			<plugin>
-				<groupId>io.github.divinespear</groupId>
+				<groupId>si.simobil.maven</groupId>
 				<artifactId>jpa-schema-maven-plugin</artifactId>
 				<version>${plugin.version}</version>
 				<configuration>
@@ -65,7 +66,15 @@
 					<jdbcUrl>jdbc:h2:nio:${basedir}/target/test-classes/unit/hibernate-noxml-database-test/target/test</jdbcUrl>
 					<jdbcUser>sa</jdbcUser>
 					<validationMode>NONE</validationMode>
+					<project implementation="io.github.divinespear.maven.plugin.stub.HibernateNoXmlDatabaseProjectStub"/>
 				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>com.h2database</groupId>
+						<artifactId>h2</artifactId>
+						<version>${h2.version}</version>
+					</dependency>
+				</dependencies>
 			</plugin>
 		</plugins>
 	</build>

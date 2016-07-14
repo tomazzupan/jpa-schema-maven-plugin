@@ -19,22 +19,19 @@ package io.github.divinespear.maven.plugin;
  * under the License.
  */
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+
+import java.io.File;
+import java.sql.*;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.anyOf;
 import static org.junit.Assert.assertThat;
 
-import java.io.File;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.Statement;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-public class HibernateXmlMojoTest
+public class HibernateNoXmlMojo
         extends AbstractSchemaGeneratorMojoTest {
 
     @Before
@@ -51,12 +48,12 @@ public class HibernateXmlMojoTest
 
     /**
      * Simple schema generation test for script using Hibernate
-     * 
+     *
      * @throws Exception
      */
     @Test
     public void testGenerateScriptUsingHibernate() throws Exception {
-        final File pomfile = this.getPomFile("target/test-classes/unit/hibernate-simple-script-test");
+        final File pomfile = this.getPomFile("target/test-classes/unit/hibernate-noxml-script-test");
 
         this.compileJpaModelSources(pomfile);
         JpaSchemaGeneratorMojo mojo = this.executeSchemaGeneration(pomfile);
@@ -64,93 +61,55 @@ public class HibernateXmlMojoTest
         File createScriptFile = mojo.getCreateOutputFile();
         assertThat("create script should be generated.", createScriptFile.exists(), is(true));
 
-        final String expectCreate = readResourceAsString("/unit/hibernate-simple-script-test/expected-create.txt");
+        final String expectCreate = readResourceAsString("/unit/hibernate-noxml-script-test/expected-create.txt");
         assertThat(this.readFileAsString(createScriptFile), is(expectCreate));
 
         File dropScriptFile = mojo.getDropOutputFile();
         assertThat("drop script should be generated.", dropScriptFile.exists(), is(true));
 
-        final String expectDrop = readResourceAsString("/unit/hibernate-simple-script-test/expected-drop.txt");
-        assertThat(this.readFileAsString(dropScriptFile), is(expectDrop));
-    }
-
-    /**
-     * Simple schema generation test for script using Hibernate
-     * 
-     * @throws Exception
-     */
-    @Test
-    public void testGenerateScriptUsingHibernateFormatted() throws Exception {
-        final File pomfile = this.getPomFile("target/test-classes/unit/hibernate-formatted-script-test");
-
-        this.compileJpaModelSources(pomfile);
-        JpaSchemaGeneratorMojo mojo = this.executeSchemaGeneration(pomfile);
-
-        File createScriptFile = mojo.getCreateOutputFile();
-        assertThat("create script should be generated.", createScriptFile.exists(), is(true));
-
-        final String expectCreate = readResourceAsString("/unit/hibernate-formatted-script-test/expected-create.txt");
-        assertThat(this.readFileAsString(createScriptFile), is(expectCreate));
-
-        File dropScriptFile = mojo.getDropOutputFile();
-        assertThat("drop script should be generated.", dropScriptFile.exists(), is(true));
-
-        final String expectDrop = readResourceAsString("/unit/hibernate-formatted-script-test/expected-drop.txt");
+        final String expectDrop = readResourceAsString("/unit/hibernate-noxml-script-test/expected-drop.txt");
         assertThat(this.readFileAsString(dropScriptFile), is(expectDrop));
     }
 
     /**
      * Simple schema generation test for database using Hibernate
-     * 
-     * @throws Exception
-     *             if any exception raises
+     *
+     * @throws Exception if any exception raises
      */
     @Test
-    public void testGenerateDatabaseUsingHibernate() throws Exception {
+    @Ignore("Schema generation method doesn't release H2 database")
+    public void generateDatabaseUsingHibernate() throws Exception {
         // delete database if exists
         File databaseFile = new File(getBasedir(),
-                                     "target/test-classes/unit/hibernate-simple-database-test/target/test.h2.db");
+                "target/test-classes/unit/hibernate-noxml-database-test/target/test.h2.db");
         if (databaseFile.exists()) {
             databaseFile.delete();
         }
 
-        final File pomfile = this.getPomFile("target/test-classes/unit/hibernate-simple-database-test");
+        final File pomfile = this.getPomFile("target/test-classes/unit/hibernate-noxml-database-test");
 
         this.compileJpaModelSources(pomfile);
         JpaSchemaGeneratorMojo mojo = this.executeSchemaGeneration(pomfile);
 
         // database check
-        Connection connection = DriverManager.getConnection(mojo.getJdbcUrl(),
-                                                            mojo.getJdbcUser(),
-                                                            mojo.getJdbcPassword());
-        try {
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = null;
-            try {
-                resultSet = statement.executeQuery("SELECT * FROM key_value_store");
-                try {
+
+        try (Connection connection = DriverManager.getConnection(mojo.getJdbcUrl(), mojo.getJdbcUser(), mojo.getJdbcPassword())) {
+
+            try(Statement statement = connection.createStatement()) {
+                try(ResultSet resultSet = statement.executeQuery("SELECT * FROM key_value_store")) {
                     ResultSetMetaData metaData = resultSet.getMetaData();
                     assertThat(metaData.getColumnCount(), is(3));
                     assertThat(metaData.getColumnName(1), anyOf(is("stored_key"), is("STORED_KEY")));
                     assertThat(metaData.getColumnName(2), anyOf(is("created_at"), is("CREATED_AT")));
                     assertThat(metaData.getColumnName(3), anyOf(is("stored_value"), is("STORED_VALUE")));
-                } finally {
-                    resultSet.close();
                 }
-                resultSet = statement.executeQuery("SELECT * FROM many_column_table");
-                try {
+                try(ResultSet resultSet = statement.executeQuery("SELECT * FROM many_column_table");) {
                     ResultSetMetaData metaData = resultSet.getMetaData();
                     assertThat(metaData.getColumnCount(), is(31));
                     assertThat(metaData.getColumnName(1), anyOf(is("id"), is("ID")));
                     assertThat(metaData.getColumnName(2), anyOf(is("column00"), is("COLUMN00")));
-                } finally {
-                    resultSet.close();
                 }
-            } finally {
-                statement.close();
             }
-        } finally {
-            connection.close();
         }
     }
 }
