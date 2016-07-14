@@ -65,7 +65,6 @@ public class JpaSchemaGeneratorMojo extends AbstractMojo {
 
     private static final Map<String, String> LINE_SEPARATOR_MAP = new HashMap<>();
     private static final Map<Vendor, String> PROVIDER_MAP = new HashMap<>();
-    private static final URL[] EMPTY_URLS = new URL[0];
     private static final Pattern CREATE_DROP_PATTERN = Pattern.compile("((?:create|drop|alter)\\s+(?:table|view|sequence))",
             Pattern.CASE_INSENSITIVE);
     private static final Pattern PATTERN_CREATE_TABLE = Pattern.compile("(?i)^create(\\s+\\S+)?\\s+(?:table|view)"),
@@ -306,6 +305,7 @@ public class JpaSchemaGeneratorMojo extends AbstractMojo {
     @Parameter
     private ValidationMode validationMode;
 
+    @SuppressWarnings("unused")
     public boolean isSkip() {
         return skip;
     }
@@ -323,6 +323,7 @@ public class JpaSchemaGeneratorMojo extends AbstractMojo {
         return persistenceXml;
     }
 
+    @SuppressWarnings("unused")
     public String getPersistenceUnitName() {
         return persistenceUnitName;
     }
@@ -348,6 +349,7 @@ public class JpaSchemaGeneratorMojo extends AbstractMojo {
         return this.outputDirectory == null ? null : new File(this.outputDirectory, this.createOutputFileName);
     }
 
+    @SuppressWarnings("unused")
     public String getDropOutputFileName() {
         return dropOutputFileName;
     }
@@ -524,6 +526,7 @@ public class JpaSchemaGeneratorMojo extends AbstractMojo {
         }
 
         if (this.outputDirectory != null && !this.outputDirectory.exists()) {
+            //noinspection ResultOfMethodCallIgnored
             this.outputDirectory.mkdirs();
         }
 
@@ -588,7 +591,9 @@ public class JpaSchemaGeneratorMojo extends AbstractMojo {
                 }
                 writer.flush();
             } finally {
+                //noinspection ResultOfMethodCallIgnored
                 file.delete();
+                //noinspection ResultOfMethodCallIgnored
                 tempFile.renameTo(file);
             }
         }
@@ -677,9 +682,9 @@ public class JpaSchemaGeneratorMojo extends AbstractMojo {
     public enum Vendor {
         eclipselink,
         hibernate,
-        // datanucleus,
     }
 
+    @SuppressWarnings("unused")
     public enum ValidationMode {
         AUTO,
         CALLBACK,

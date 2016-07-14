@@ -48,7 +48,8 @@ final class JpaSchemaGeneratorWrapper {
         if (managedClassNames == null)
             throw new NullPointerException("managedClassNames");
 
-        pui = new PersistenceUnitInfoImp(persistenceProviderClassName, persistenceUnitRootUrl, managedClassNames, properties);
+        pui = new PersistenceUnitInfoImp(persistenceProviderClassName, persistenceUnitRootUrl, managedClassNames, null);
+        this.properties = properties;
     }
 
     void generateSchema() throws Exception {
@@ -56,7 +57,7 @@ final class JpaSchemaGeneratorWrapper {
             Persistence.generateSchema(persistenceUnitName, properties);
         else {
             PersistenceProvider provider = (PersistenceProvider) Class.forName(pui.getPersistenceProviderClassName()).newInstance();
-            provider.generateSchema(pui, pui.getProperties());
+            provider.generateSchema(pui, properties);
         }
     }
 }

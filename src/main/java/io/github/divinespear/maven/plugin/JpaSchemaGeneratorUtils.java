@@ -200,8 +200,6 @@ final class JpaSchemaGeneratorUtils {
 
         /* force override JTA to RESOURCE_LOCAL */
         map.put(TRANSACTION_TYPE, "RESOURCE_LOCAL");
-        map.put(JTA_DATASOURCE, null);
-        map.put(NON_JTA_DATASOURCE, null);
 
         // normalize - remove null
         List<String> keys = new ArrayList<>(map.keySet());
@@ -210,6 +208,10 @@ final class JpaSchemaGeneratorUtils {
                 map.remove(key);
             }
         }
+
+        // to override datasource parameters
+        map.put(JTA_DATASOURCE, null);
+        map.put(NON_JTA_DATASOURCE, null);
 
         return map;
     }

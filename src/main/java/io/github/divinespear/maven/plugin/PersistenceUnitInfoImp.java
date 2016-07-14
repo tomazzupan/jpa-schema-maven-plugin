@@ -47,7 +47,8 @@ public class PersistenceUnitInfoImp implements PersistenceUnitInfo {
         this.persistenceProviderClassName = persistenceProviderClassName;
         this.persistenceUnitRootUrl = persistenceUnitRootUrl;
         this.managedClassNames = managedClassNames;
-        this.properties.putAll(properties);
+        if (properties != null)
+            this.properties.putAll(properties);
     }
 
     @Override

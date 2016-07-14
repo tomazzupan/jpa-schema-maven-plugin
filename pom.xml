@@ -95,6 +95,10 @@
         <site-maven-plugin.version>0.12</site-maven-plugin.version>
         <spring-data-jpa.version>1.9.2.RELEASE</spring-data-jpa.version>
         <aether.version>1.0.0.v20140518</aether.version>
+
+		<!-- distribution management -->
+		<simobil.release.repo.url>http://nexus.simobil.lan/nexus/content/repositories/public-releases</simobil.release.repo.url>
+		<simobil.snapshot.repo.url>http://nexus.simobil.lan/nexus/content/repositories/public-snapshots</simobil.snapshot.repo.url>
     </properties>
 
     <dependencies>
@@ -233,6 +237,15 @@
             <version>${maven-plugin-testing-harness.version}</version>
             <scope>test</scope>
         </dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager</artifactId>
+			<version>${hibernate.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Just for debugging-->
+
 	</dependencies>
 
     <reporting>
@@ -356,4 +369,18 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<distributionManagement>
+		<repository>
+			<id>simobil-nexus</id>
+			<name>Si.mobil Releases Repository</name>
+			<url>${simobil.release.repo.url}</url>
+		</repository>
+		<snapshotRepository>
+			<id>simobil-nexus</id>
+			<name>Si.mobil Snapshots Repository</name>
+			<url>${simobil.snapshot.repo.url}</url>
+		</snapshotRepository>
+	</distributionManagement>
+
 </project>
