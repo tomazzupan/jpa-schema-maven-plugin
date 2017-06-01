@@ -61,7 +61,8 @@ public abstract class AbstractProjectStub extends MavenProjectStub {
     @Override
     public List<RemoteRepository> getRemoteProjectRepositories() {
         List<RemoteRepository> remoteRepositories = new ArrayList<>();
-        RemoteRepository centralRepository = new RemoteRepository.Builder("central", "default", "http://repo.maven.apache.org/maven2").build();
+        RemoteRepository centralRepository = new RemoteRepository.Builder("a1-public", "default",
+                "http://nexus.simobil.lan/repository/public/").build();
         remoteRepositories.add(centralRepository);
 
         return remoteRepositories;
