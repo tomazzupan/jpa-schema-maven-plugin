@@ -2,35 +2,25 @@ package io.github.divinespear.maven.plugin;
 
 import org.apache.maven.RepositoryUtils;
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.ArtifactScopeEnum;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.MojoExecution;
 import org.apache.maven.plugin.descriptor.PluginDescriptor;
 import org.apache.maven.plugin.testing.AbstractMojoTestCase;
-import org.apache.maven.plugins.annotations.ResolutionScope;
-import org.apache.maven.project.DefaultDependencyResolutionRequest;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
 import org.apache.maven.shared.invoker.*;
 import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.artifact.ArtifactTypeRegistry;
 import org.eclipse.aether.collection.CollectRequest;
-import org.eclipse.aether.connector.basic.BasicRepositoryConnectorFactory;
 import org.eclipse.aether.graph.DependencyFilter;
-import org.eclipse.aether.impl.DefaultServiceLocator;
 import org.eclipse.aether.repository.LocalRepository;
 import org.eclipse.aether.resolution.ArtifactResult;
 import org.eclipse.aether.resolution.DependencyRequest;
 import org.eclipse.aether.resolution.DependencyResolutionException;
 import org.eclipse.aether.resolution.DependencyResult;
-import org.eclipse.aether.spi.connector.RepositoryConnectorFactory;
-import org.eclipse.aether.spi.connector.transport.TransporterFactory;
-import org.eclipse.aether.transport.file.FileTransporterFactory;
-import org.eclipse.aether.transport.http.HttpTransporterFactory;
 import org.eclipse.aether.util.filter.ScopeDependencyFilter;
 
 import java.io.*;
@@ -45,7 +35,7 @@ import static org.junit.Assert.assertThat;
 abstract class AbstractSchemaGeneratorMojoTest
         extends AbstractMojoTestCase {
 
-    public static final String LINE_SEPARATOR = System.getProperty("line.separator");
+    static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
     private static final String POM_FILENAME = "pom.xml";
 
@@ -58,12 +48,12 @@ abstract class AbstractSchemaGeneratorMojoTest
         return new File(new File(getBasedir(), path), pomFileName);
     }
 
-    protected void compileJpaModelSources(File pomfile) throws MavenInvocationException {
+    protected void compileJpaModelSources(File pomFile) throws MavenInvocationException {
         Properties properties = new Properties();
         properties.setProperty("plugin.version", System.getProperty("plugin.version"));
 
         InvocationRequest request = new DefaultInvocationRequest();
-        request.setPomFile(pomfile);
+        request.setPomFile(pomFile);
         request.setGoals(Collections.singletonList("compile"));
         request.setProperties(properties);
 
@@ -71,14 +61,13 @@ abstract class AbstractSchemaGeneratorMojoTest
         invoker.execute(request);
     }
 
-    protected JpaSchemaGeneratorMojo getGenerateMojo(File pomfile) throws Exception {
-        return (JpaSchemaGeneratorMojo) lookupMojo("generate", pomfile);
+    JpaSchemaGeneratorMojo getGenerateMojo(File pomFile) throws Exception {
+        return (JpaSchemaGeneratorMojo) lookupMojo("generate", pomFile);
     }
 
-    protected JpaSchemaGeneratorMojo executeSchemaGeneration(File pomfile) throws Exception {
-        String parent = pomfile.getParent();
+    protected JpaSchemaGeneratorMojo executeSchemaGeneration(File pomFile) throws Exception {
         // create mojo
-        JpaSchemaGeneratorMojo mojo = getGenerateMojo(pomfile);
+        JpaSchemaGeneratorMojo mojo = getGenerateMojo(pomFile);
         assertThat(mojo, notNullValue(JpaSchemaGeneratorMojo.class));
 
         // setSession

@@ -1,13 +1,13 @@
 package io.github.divinespear.maven.plugin;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-
-import java.io.File;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.io.File;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 public class Issue10Test
         extends AbstractSchemaGeneratorMojoTest {
@@ -30,11 +30,12 @@ public class Issue10Test
      * @throws Exception
      */
     @Test
+    @SuppressWarnings("JUnit4AnnotatedMethodInJUnit3TestCase")
     public void testIssue10() throws Exception {
-        final File pomfile = this.getPomFile("target/test-classes/unit/issue-10");
+        final File pomFile = this.getPomFile("target/test-classes/unit/issue-10");
 
-        this.compileJpaModelSources(pomfile);
-        JpaSchemaGeneratorMojo mojo = this.executeSchemaGeneration(pomfile);
+        this.compileJpaModelSources(pomFile);
+        JpaSchemaGeneratorMojo mojo = this.executeSchemaGeneration(pomFile);
 
         File createScriptFile = mojo.getCreateOutputFile();
         assertThat("create script should be generated.", createScriptFile.exists(), is(true));

@@ -10,7 +10,8 @@
 	WARRANTIES OR CONDITIONS OF ANY ~ KIND, either express or implied. See the 
 	License for the ~ specific language governing permissions and limitations 
 	~ under the License. -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>si.simobil.maven</groupId>
@@ -66,8 +67,8 @@
 	</issueManagement>
 
 	<ciManagement>
-		<system>Travis CI</system>
-		<url>https://travis-ci.org/divinespear/jpa-schema-maven-plugin</url>
+        <system>TeamCity</system>
+        <url>http://ci.simobil.lan/viewType.html?buildTypeId=SiMobilMavenPlugins_JpaSchemaGenerator</url>
 	</ciManagement>
 
 	<properties>
@@ -97,8 +98,8 @@
         <aether.version>1.0.0.v20140518</aether.version>
 
 		<!-- distribution management -->
-		<simobil.release.repo.url>http://nexus.simobil.lan/nexus/content/repositories/public-releases</simobil.release.repo.url>
-		<simobil.snapshot.repo.url>http://nexus.simobil.lan/nexus/content/repositories/public-snapshots</simobil.snapshot.repo.url>
+        <simobil.release.repo.url>http://nexus.simobil.lan/repository/public-releases/</simobil.release.repo.url>
+        <simobil.snapshot.repo.url>http://nexus.simobil.lan/repository/public-snapshots/</simobil.snapshot.repo.url>
     </properties>
 
     <dependencies>
@@ -300,6 +301,7 @@
 				<version>${maven-surefire-plugin.version}</version>
 				<configuration>
 					<systemPropertyVariables>
+                        <!--suppress MavenModelInspection -->
 						<maven.home>${maven.home}</maven.home>
 					</systemPropertyVariables>
 					<argLine>-Dplugin.version=${project.version}</argLine>
@@ -372,12 +374,12 @@
 
 	<distributionManagement>
 		<repository>
-			<id>simobil-nexus</id>
+            <id>simobil-public</id>
 			<name>Si.mobil Releases Repository</name>
 			<url>${simobil.release.repo.url}</url>
 		</repository>
 		<snapshotRepository>
-			<id>simobil-nexus</id>
+            <id>simobil-public</id>
 			<name>Si.mobil Snapshots Repository</name>
 			<url>${simobil.snapshot.repo.url}</url>
 		</snapshotRepository>
