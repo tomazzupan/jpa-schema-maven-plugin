@@ -9,6 +9,7 @@ import java.io.File;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
+@SuppressWarnings("JUnit4AnnotatedMethodInJUnit3TestCase")
 public class IssueTz1Test
         extends AbstractSchemaGeneratorMojoTest {
 
@@ -26,16 +27,15 @@ public class IssueTz1Test
 
     /**
      * Simple schema generation test for script using Hibernate
-     * 
-     * @throws Exception
-     *             if any exception raises
+     *
+     * @throws Exception if any exception raises
      */
     @Test
     public void testGenerateScriptUsingEclipseLink() throws Exception {
-        final File pomfile = this.getPomFile("target/test-classes/unit/issue-tz1");
+        final File pomFile = this.getPomFile("target/test-classes/unit/issue-tz1");
 
-        this.compileJpaModelSources(pomfile);
-        JpaSchemaGeneratorMojo mojo = this.executeSchemaGeneration(pomfile);
+        this.compileJpaModelSources(pomFile);
+        JpaSchemaGeneratorMojo mojo = this.executeSchemaGeneration(pomFile);
 
         File createScriptFile = mojo.getCreateOutputFile();
         assertThat("create script should be generated.", createScriptFile.exists(), is(true));
