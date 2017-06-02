@@ -304,7 +304,7 @@
                         <!--suppress MavenModelInspection -->
 						<maven.home>${maven.home}</maven.home>
 					</systemPropertyVariables>
-					<argLine>-Dplugin.version=${project.version}</argLine>
+					<argLine>-XX:MaxPermSize=128m -Dplugin.version=${project.version}</argLine>
 				</configuration>
 			</plugin>
 			<plugin>
